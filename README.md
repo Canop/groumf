@@ -5,6 +5,8 @@ Groumf lets you search and replace on strings or dom elements, in a browser or i
 
 Groumf can be used when you have a big thesaurus (no problem with 100 000 expressions) and you want to fast search and replace those expressions in any text. Groumf doesn't need the expressions to be tokens or of any specific form.
 
+You can also use Groumf without thesaurus, for simple replacements similar to what you can do with String.replace but on a DOM element.
+
 
 ## Usages :
 
@@ -24,9 +26,9 @@ In this exemple, we want to replace words with links in html messages.
 	// Initialization of the replacer
 	var replacer = new Groumf();
 	replacer.skipTags('a'); // don't replace inside <a> elements
-	replacer.add("Some Name", 123456);
+	replacer.add("Some Name", 1);
 	...
-	replacer.add("Pretty Name!", 654321);
+	replacer.add("Pretty Name!", 54321);
 
 	// replacements of an html message
 	replacer.replace(domElement, function(name, id){

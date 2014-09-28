@@ -65,7 +65,7 @@
 					var initialText = node.nodeValue,
 						changedText = this.replace(initialText, cb, arg3);
 					if (changedText && changedText!==initialText) {
-						if (/</.test(changedText)) {
+						if (/^</.test(changedText)) {
 							// lazy implementation : we replace the text node with a span
 							var newNode = document.createElement('span');
 							newNode.innerHTML = changedText;
