@@ -3,21 +3,38 @@ Groumf
 
 Groumf lets you search and replace on strings or dom elements, in a browser or in node.
 
-Groumf can be used when you have a big thesaurus (no problem with 100 000 expressions) and you want to fast search and replace those expressions in any text. Groumf doesn't need the expressions to be tokens or of any specific form.
+You can use one or both of the two complementary features :
 
-You can also use Groumf without thesaurus, for simple replacements similar to what you can do with String.replace but on a DOM element.
+1. Search and replace on the text nodes of a DOM tree (with the capability to insert HTML nodes)
+2. Thesaurus (and optionnally callback) based search and replace
+
+When using a thesaurus, you can make it big (no problem with 100 000 expressions) and you can make them any form (at least 3 chars) : no problem with multi-words expressions or expressions containing special characters. Groumpf is cautious enough not to replace "super car" in "super cargo" and will choose the longest expression when more than one apply.
+
+When working on a DOM tree, you may choose the safety of having the replacement inserted as text (thus preventing injections) or the power of HTML insertion (convenient when you want to replace names with links to profiles, for example). You can also use Groumpf on a DOM tree without thesaurus but with a regular expression and a callback.
 
 
-## Usages :
+## Usage
 
-* `replace(string)` : replace all occurences of the expressions by the corresponding value
-* `replace(string, callback)` : replace all occurences of the expressions by what the callback returns (it receives the string and the corresponding value)
-* `replace(string, string, string)` : equivalent to string.replace(string, string)
-* `replace(string, regex, string)` : equivalent to string.replace(regex, string)
-* `replace(string, regex, cb)` : equivalent to string.replace(regex, cb)
+Those functions are called on an instance of Groumf, optionnaly parameterized.
 
-When the first argument isn't a string but an element, the replacement is applied (same arguments) on all text nodes descendant of that element. If the callback returns HTML, that HTML is inserted as HTML.
+### replaceInString
 
+* `groumpf.replaceInString(string)` : replace all occurences of the expressions by the corresponding values
+* `groumpf.replaceInString(string, callback)` : replace all occurences of the expressions by what the callback returns (it receives the string and the corresponding value)
+
+### replaceTextWithTextInHTML
+
+* `groumpf.replaceTextWithTextInHTML(element)` : replace all occurences of the expressions by the corresponding values in all text nodes descendant of the element
+* `groumpf.replaceTextWithTextInHTML(element, callback)` : replace all occurences of the expressions by what the callback returns in all text nodes descendant of the element
+* `groumpf.replaceTextWithTextInHTML(element, regex, callback)` : similar to someString.replace(regex, callback) but applied to all text nodes descendant of the element
+
+### replaceTextWithHTMLInHTML
+
+* `groumpf.replaceTextWithHTMLInHTML(element)` : replace all occurences of the expressions by the corresponding values in all text nodes descendant of the element, but the value is inserted as HTML
+* `groumpf.replaceTextWithHTMLInHTML(element, callback)` : replace all occurences of the expressions by what the callback returns in all text nodes descendant of the element, but the return of the callback is inserted as HTML
+* `groumpf.replaceTextWithHTMLInHTML(element, regex, callback)` : similar to someString.replace(regex, callback) but applied to all text nodes descendant of the element, but the return of the callback is inserted as HTML
+
+## Examples
 
 ### Replacing expressions based on a thesaurus with a callback, in HTML elements
 
@@ -31,7 +48,7 @@ In this exemple, we want to replace words with links in html messages.
 	replacer.add("Pretty Name!", 54321);
 
 	// replacements of an html message
-	replacer.replace(domElement, function(name, id){
+	replacer.replaceTextWithHTMLInHTML(domElement, function(name, id){
 		return '<a href="http://test.com/users/'+id+'">'+name+'</a>'
 	});
 
@@ -42,21 +59,27 @@ In this exemple, we want to replace words with links in html messages.
 	replacer.add("2π/3", "2.094");
 	replacer.add("2π/33", "0.19"); // has priority over 2π/3
 	replacer.add("3π/7", "1.346");
-	var outputString = replacer.replace(inputString);
-	
-### Reversing the words in all text nodes of a page
+	var outputString = replacer.replaceInString(inputString);
 
-	(new Groumf).replace(document.body, /\w+/g, function(s){
-		return s.split('').reverse().join('')
+### Italizing big numbers
+
+	Groumf.replaceTextWithHTMLInHTML(document.body, /\b\d{5,}\b/g, function(s){
+		return '<i>'+s+'</i>'
 	});
 
-## Limitations :
+`Groumf.replaceXXX` is a shortcut to `(new Groumf).replaceXXX`.
 
-1. Groumf doesn't currently support expressions of less than 3 characters.
+### Reversing the words in all text nodes of a page
+
+	Groumf.replaceTextWithTextInHTML(document.body, /\w+/g, function(s){
+		return s.split('').reverse().join('')
+	});
+	
+This operation never creates any node, it just changes the text of the existing one.
 
 ## Tests :
 
-There's a test suite for core Groumf functions. To execute it, install buster globally then run
+There's a test suite for Groumf functions on strings. To execute it, install buster globally then run
 
     buster-test
 

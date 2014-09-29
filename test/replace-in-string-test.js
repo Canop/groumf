@@ -27,6 +27,14 @@ buster.testCase("Groumf - replace in string", {
 		var output = "(24π + 2π + 12π/3 + 1.57 - 1.346 + π)";
 		buster.assert.equals(replacer.replace(input), output);
 	},
+	"callback replace not cutting word with (basic) Unicode support": function () { // replace(string)
+		var replacer = new Groumf();
+		replacer.add("cha");
+		var input = "Un chat en chaînes";
+		var output = input;
+		var cb = function(s){ return '['+s+']' };
+		buster.assert.equals(replacer.replace(input, cb), output);
+	},
 	"callback replace": function () { // replace(string, callback)
 		var replacer = new Groumf();
 		replacer.add('Schtroumpfs', 'plural');
@@ -50,3 +58,4 @@ buster.testCase("Groumf - replace in string", {
 		buster.assert.equals(replacer.replace(input, /\w+/g, cb), output);
 	},
 });
+
