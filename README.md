@@ -19,7 +19,7 @@ Those functions are called on an instance of Groumf, optionnaly parameterized.
 
 ### replaceInString
 
-* `groumpf.replaceInString(string)` : replace all occurences of the expressions by the corresponding values
+* `groumpf.replaceInString(string)` : replace all occurences of the thesaurus expressions by their corresponding values
 * `groumpf.replaceInString(string, callback)` : replace all occurences of the expressions by what the callback returns (it receives the string and the corresponding value)
 
 ### replaceTextWithTextInHTML

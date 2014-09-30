@@ -27,6 +27,14 @@ buster.testCase("Groumf - replace in string", {
 		var output = "(24π + 2π + 12π/3 + 1.57 - 1.346 + π)";
 		buster.assert.equals(replacer.replace(input), output);
 	},
+	"callback replace cutting word": function () { // replace(string)
+		var replacer = new Groumf({dontCutWords:false});
+		replacer.add("cha");
+		var input = "Un chat en chaînes";
+		var output = "Un [cha]t en [cha]înes";
+		var cb = function(s){ return '['+s+']' };
+		buster.assert.equals(replacer.replace(input, cb), output);
+	},
 	"callback replace not cutting word with (basic) Unicode support": function () { // replace(string)
 		var replacer = new Groumf();
 		replacer.add("cha");

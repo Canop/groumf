@@ -5,15 +5,10 @@
 	
 	var WordCharRegex = /[\d@A-Z_a-z~\xa1-\xac\xae-\xaf\xb5-\xba\xc0-\xfe]/; // something a little less bad than the \w of ES5
 
-	function opt(options, name, defaultValue){
-		if (!opt || opt[name]===undefined) return defaultValue;
-		return opt[name];
-	}
-
 	function Groumf(options){
 		this.forest = {};
 		this.skippedTags = {};
-		this.dontCutWords = opt(options, 'dontCutWords', true);
+		this.dontCutWords = (options && options.dontCutWords!==undefined) ? options.dontCutWords : true;
 		this.skipTags("audio", "img", "svg", "title", "video");
 	}
 
@@ -23,7 +18,6 @@
 	Groumf.prototype.dontSkipTags = function(){
 		for (var i=0; i<arguments.length; i++) this.skippedTags[arguments[i].toUpperCase()] = false;
 	}
-
 
 	// add an expression to search. The value is optionnal, and would be given
 	// to a callback or be used as replacement value if the replacer is used without
