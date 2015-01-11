@@ -45,7 +45,7 @@
 	}	
 
 	Groumf.prototype.replaceInString = function(input, cb, arg3){
-		if (arg3) return input.replace(cb, arg3);
+		if (arg3 !== undefined) return input.replace(cb, arg3);
 		var end = input.length-2,
 			output = [],
 			copied = 0,
@@ -162,7 +162,7 @@
 	Groumf.prototype.replace = function(input, cb, arg3){
 		var nodes = input.childNodes;
 		if (nodes) {
-			return this.replaceTextInHTML(input, cb, arg3);
+			return this.replaceTextWithTextInHTML(input, cb, arg3);
 		} else {
 			return this.replaceInString(input, cb, arg3);
 		}
