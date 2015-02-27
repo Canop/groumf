@@ -103,6 +103,7 @@
 						element.insertBefore(newNodes[k], node);
 					}
 					copied = res.index+res[0].length;
+					if (!regex.global) break;
 				}
 				if (copied) {
 					element.insertBefore(document.createTextNode(input.slice(copied, input.length)), node);
