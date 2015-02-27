@@ -99,8 +99,9 @@
 					var r = cb.apply(null, res.concat(res.index, res.input)),
 						div=document.createElement('div');
 					div.innerHTML = r;
-					for (var k=0, newNodes=div.childNodes, nnl=newNodes.length; k<nnl; k++) {
-						element.insertBefore(newNodes[k], node);
+					var childNode;
+					while (childNode = div.firstChild) {
+						element.insertBefore(childNode, node);
 					}
 					copied = res.index+res[0].length;
 					if (!regex.global) break;
