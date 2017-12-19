@@ -43,7 +43,7 @@ buster.testCase("Groumf - replace in string", {
 		var cb = function(s){ return '['+s+']' };
 		buster.assert.equals(replacer.replace(input, cb), output);
 	},
-	"callback replace not cutting word with Unicode (Latin-A extended) support 2nd": function () {
+	"callback replace not cutting word with Unicode (Latin-A extended) support": function () {
 		var replacer = new Groumf();
 		replacer.add("urs", "T1");
 		replacer.add("sœur", "T2");
