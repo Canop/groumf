@@ -43,6 +43,15 @@ buster.testCase("Groumf - replace in string", {
 		var cb = function(s){ return '['+s+']' };
 		buster.assert.equals(replacer.replace(input, cb), output);
 	},
+	"callback replace not cutting word with Unicode (Latin-A extended) support": function () {
+		var replacer = new Groumf();
+		replacer.add("urs", "T1");
+		replacer.add("sœur", "T2");
+		var input = "Le troll urs avais deux sœurs, mais le troll sœur n'en faisait pas partie.";
+		var output = "Le troll [urs](T1) avais deux sœurs, mais le troll [sœur](T2) n'en faisait pas partie.";
+		var cb = function(s,v){ return '['+s+']('+v+')' };
+		buster.assert.equals(replacer.replace(input, cb), output);
+	},
 	"callback replace": function () {
 		var replacer = new Groumf();
 		replacer.add('Schtroumpfs', 'plural');
