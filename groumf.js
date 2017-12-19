@@ -2,8 +2,11 @@
 // https://github.com/Canop/groumf
 
 (function(){
-	
-	var WordCharRegex = /[\d@A-Z_a-z~\xa1-\xac\xae-\xaf\xb5-\xba\xc0-\xfe]/; // something a little less bad than the \w of ES5
+
+	"use strict";
+
+	// something a little less bad than the \w of ES5
+	var WordCharRegex = /[\d@A-Z_a-z~\xa1-\xac\xae-\xaf\xb5-\xba\xc0-\xfe]/;
 
 	function Groumf(options){
 		this.forest = {};
@@ -24,11 +27,11 @@
 	// callback.
 	Groumf.prototype.add = function(expr,  value){
 		if (expr.length<3) return console.log('Expression "'+expr+'" ignored : too short');
-		var root = expr.slice(0,3).toLowerCase(),
+		var	root = expr.slice(0, 3).toLowerCase(),
 			tree = this.forest[root];
 		if (!tree) tree = this.forest[root] = [];
-		tree.push({p:expr.toLowerCase(),v:value||expr});
-		tree.sort(function(a,b){
+		tree.push({p:expr.toLowerCase(), v:value||expr});
+		tree.sort(function(a, b){
 			return b.p.length-a.p.length
 		});
 	}
@@ -36,23 +39,23 @@
 	// searches the added expressions for a case insensitive equivalent.
 	// returns the originally added expression or its value if any.
 	Groumf.prototype.get = function(expr){
-		var lexpr = expr.toLowerCase(),
-			tree = this.forest[lexpr.slice(0,3)];
+		var	lexpr = expr.toLowerCase(),
+			tree = this.forest[lexpr.slice(0, 3)];
 		if (!tree) return;
 		for (var i=0; i<tree.length; i++) {
 			if (tree[i].p===lexpr) return tree[i].v;
 		}
-	}	
+	}
 
 	Groumf.prototype.replaceInString = function(input, cb, arg3){
 		if (arg3 !== undefined) return input.replace(cb, arg3);
-		var end = input.length-2,
+		var	end = input.length-2,
 			output = [],
 			copied = 0,
 			char;
 		for (var p=0; p<end; p++) {
 			if (this.dontCutWords && p && WordCharRegex.test(input[p-1])) continue;
-			var root = input.slice(p, p+3).toLowerCase(),
+			var	root = input.slice(p, p+3).toLowerCase(),
 				tree = this.forest[root];
 			if (!tree) continue;
 			for (var i=0; i<tree.length; i++) {
@@ -88,7 +91,7 @@
 
 	Groumf.prototype.replaceTextWithHTMLInHTMLUsingRegex = function(element, regex, cb){
 		var nodes = [].slice.call(element.childNodes);
-		for (var i=nodes.length; i--;) {
+		for (var i=0; i<nodes.length; i++) {
 			var node = nodes[i];
 			if (node.nodeType===3) {
 				var	input = node.nodeValue,
@@ -120,7 +123,7 @@
 	Groumf.prototype.replaceTextWithHTMLInHTML = function(element, cb, arg3){
 		if (arg3) return this.replaceTextWithHTMLInHTMLUsingRegex(element, cb, arg3);
 		var nodes = [].slice.call(element.childNodes);
-		for (var i=nodes.length; i--;) {
+		for (var i=0; i<nodes.length; i++) {
 			var node = nodes[i];
 			if (node.nodeType===3) {
 				var	input = node.nodeValue,
@@ -169,8 +172,14 @@
 			return this.replaceInString(input, cb, arg3);
 		}
 	}
-	
-	;['replace','replaceTextWithHTMLInHTML','replaceTextWithHTMLInHTMLUsingRegex','replaceTextWithTextInHTML','replaceInString'].forEach(function(n){
+
+	;[
+		'replace',
+		'replaceTextWithHTMLInHTML',
+		'replaceTextWithHTMLInHTMLUsingRegex',
+		'replaceTextWithTextInHTML',
+		'replaceInString'
+	].forEach(function(n){
 		Groumf[n] = function(){
 			return Groumf.prototype[n].apply(new Groumf, arguments);
 		};
