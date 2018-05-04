@@ -96,8 +96,10 @@
 					copied = 0,
 					res;
 				while (res = regex.exec(input)) {
-					if (res.index) element.insertBefore(document.createTextNode(input.slice(copied, res.index)), node);
-					var r = cb.apply(null, res.concat(res.index, res.input)),
+					if (res.index) {
+						element.insertBefore(document.createTextNode(input.slice(copied, res.index)), node);
+					}
+					var	r = cb.apply(null, res.concat(res.index, res.input)),
 						div=document.createElement('div');
 					div.innerHTML = r;
 					var childNode;
@@ -112,9 +114,12 @@
 					element.removeChild(node);
 				}
 			} else {
-				if (!this.skippedTags[node.tagName]) this.replaceTextWithHTMLInHTMLUsingRegex(node, regex, cb);
+				if (!this.skippedTags[node.tagName]) {
+					this.replaceTextWithHTMLInHTMLUsingRegex(node, regex, cb);
+				}
 			}
 		}
+		element.normalize();
 		return element;
 	}
 

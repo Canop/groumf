@@ -1,6 +1,8 @@
 Groumf
 ======
 
+[![Chat on Miaou](https://dystroy.org/miaou/static/shields/room-en.svg?v=1)](https://dystroy.org/miaou/8?Javascript)
+
 Groumf lets you search and replace on strings or dom elements, in a browser or in node.
 
 You can use one or both of the two complementary features :
@@ -39,7 +41,7 @@ Those functions are called on an instance of Groumf, optionnaly parameterized.
 ### Replacing expressions based on a thesaurus with a callback, in HTML elements
 
 In this exemple, we want to replace words with links in html messages.
-	
+
 	// Initialization of the replacer
 	var replacer = new Groumf();
 	replacer.skipTags('a'); // don't replace inside <a> elements
@@ -74,7 +76,7 @@ In this exemple, we want to replace words with links in html messages.
 	Groumf.replaceTextWithTextInHTML(document.body, /\w+/g, function(s){
 		return s.split('').reverse().join('')
 	});
-	
+
 This operation never creates any node, it just changes the text of the existing one.
 
 ## Tests :
