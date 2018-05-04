@@ -87,8 +87,10 @@
 		return element;
 	}
 
-	Groumf.prototype.replaceTextWithHTMLInHTMLUsingRegex = function(element, regex, cb){
+	// return true if the element was modified
+	Groumf.prototype._replaceTextWithHTMLInHTMLUsingRegex = function(element, regex, cb){
 		var nodes = [].slice.call(element.childNodes);
+		var changed = false;
 		for (var i=0; i<nodes.length; i++) {
 			var node = nodes[i];
 			if (node.nodeType===3) {
@@ -96,6 +98,7 @@
 					copied = 0,
 					res;
 				while (res = regex.exec(input)) {
+					changed = true;
 					if (res.index) {
 						element.insertBefore(document.createTextNode(input.slice(copied, res.index)), node);
 					}
@@ -115,17 +118,25 @@
 				}
 			} else {
 				if (!this.skippedTags[node.tagName]) {
-					this.replaceTextWithHTMLInHTMLUsingRegex(node, regex, cb);
+					if (this._replaceTextWithHTMLInHTMLUsingRegex(node, regex, cb)) {
+						changed = true;
+					}
 				}
 			}
 		}
-		element.normalize();
+		return changed;
+	}
+
+	// return true if the element was modified
+	Groumf.prototype.replaceTextWithHTMLInHTMLUsingRegex = function(element, regex, cb){
+		var changed = this._replaceTextWithHTMLInHTMLUsingRegex(element, regex, cb);
+		if (changed) element.normalize();
 		return element;
 	}
 
-	Groumf.prototype.replaceTextWithHTMLInHTML = function(element, cb, arg3){
-		if (arg3) return this.replaceTextWithHTMLInHTMLUsingRegex(element, cb, arg3);
-		var nodes = [].slice.call(element.childNodes);
+	Groumf.prototype._replaceTextWithHTMLInHTML = function(element, cb){
+		var	nodes = [].slice.call(element.childNodes),
+			changed = false;
 		for (var i=0; i<nodes.length; i++) {
 			var node = nodes[i];
 			if (node.nodeType===3) {
@@ -135,7 +146,7 @@
 					char;
 				for (var p=0; p<end; p++) {
 					if (this.dontCutWords && p && WordCharRegex.test(input[p-1])) continue;
-					var root = input.slice(p, p+3).toLowerCase(),
+					var	root = input.slice(p, p+3).toLowerCase(),
 						tree = this.forest[root];
 					if (!tree) continue;
 					for (var j=0; j<tree.length; j++) {
@@ -143,8 +154,9 @@
 						if (this.dontCutWords && (char=input[p+pat.length]) && WordCharRegex.test(char)) continue;
 						var cur = input.slice(p, p+pat.length);
 						if (cur.toLowerCase()===pat) {
+							changed = true;
 							if (p) element.insertBefore(document.createTextNode(input.slice(copied, p)), node);
-							var r = cb ? cb(cur, tree[j].v) : tree[j].v,
+							var	r = cb ? cb(cur, tree[j].v) : tree[j].v,
 								div=document.createElement('div');
 							div.innerHTML = r;
 							for (var k=0, newNodes=div.childNodes, nnl=newNodes.length; k<nnl; k++) {
@@ -161,11 +173,22 @@
 					element.removeChild(node);
 				}
 			} else {
-				if (!this.skippedTags[node.tagName]) this.replaceTextWithHTMLInHTML(node, cb);
+				if (!this.skippedTags[node.tagName] && this._replaceTextWithHTMLInHTML(node, cb)) {
+					changed = true;
+				}
 			}
 		}
+		return changed;
+	}
+
+	Groumf.prototype.replaceTextWithHTMLInHTML = function(element, cb, arg3){
+		if (arg3
+			? this._replaceTextWithHTMLInHTMLUsingRegex(element, cb, arg3)
+			: this._replaceTextWithHTMLInHTML(element, cb)
+		) element.normalize();
 		return element;
 	}
+
 
 	Groumf.prototype.replace = function(input, cb, arg3){
 		var nodes = input.childNodes;
