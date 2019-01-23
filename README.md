@@ -1,7 +1,7 @@
 Groumf
 ======
 
-[![Chat on Miaou](https://dystroy.org/miaou/static/shields/room-en.svg?v=1)](https://dystroy.org/miaou/8?Javascript)
+[![Chat on Miaou](https://miaou.dystroy.org/static/shields/room-en.svg?v=1)](https://miaou.dystroy.org/8?Javascript)
 
 Groumf lets you search and replace on strings or dom elements, in a browser or in node.
 
